@@ -14,7 +14,16 @@ if(MSVC)
     endif()
 endif()
 
+include(FetchContent)
+FetchContent_Declare(googletest URL https://github.com/google/googletest/archive/6b63c98ac43efc992122f1da12aaf0a0e0658206.zip)
+set(gtest_force_shared_crt ON CACHE BOOL "" FORCE)
+FetchContent_MakeAvailable(googletest)
 
 # Объявляем исполняемый файл
-add_executable(main "src/linked_list.cc")
+add_library(linked_list "src/linked_list.cc")
+set_target_properties(linked_list PROPERTIES LINKER_LANGUAGE CXX)
+target_compile_features(linked_list PUBLIC cxx_std_23)
 
+add_executable(linked_list_test "tests.cc")
+target_link_libraries(linked_list_test gtest gtest_main linked_list)
+target_include_directories(linked_list_test PRIVATE "${CMAKE_SOURCE_DIR}")
