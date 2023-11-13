@@ -24,6 +24,8 @@ add_library(linked_list "src/linked_list.cc")
 set_target_properties(linked_list PROPERTIES LINKER_LANGUAGE CXX)
 target_compile_features(linked_list PUBLIC cxx_std_23)
 
+add_executable(main "src/main.cc")
+
 add_executable(linked_list_test "tests.cc")
 target_link_libraries(linked_list_test gtest gtest_main linked_list)
 target_include_directories(linked_list_test PRIVATE "${CMAKE_SOURCE_DIR}")

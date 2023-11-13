@@ -122,3 +122,15 @@ TEST(LinkedListTest, Clear) {
 
     EXPECT_THROW(lst.pop_head(), std::invalid_argument);
 }
+
+TEST(LinkedListTest, Reverse) {
+    LinkedList<int> lst;
+    lst.push_tail(1);
+    lst.push_tail(2);
+    lst.push_tail(3);
+    lst.reverse();
+
+    EXPECT_EQ(lst[0], 3);
+    EXPECT_EQ(lst[1], 2);
+    EXPECT_EQ(lst[2], 1);
+}

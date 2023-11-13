@@ -31,14 +31,26 @@ public:
 	LinkedList(size_t size, T lower_bound, T upper_bound) : LinkedList() {
 		std::random_device rd;
 		std::mt19937 gen(rd());
-		std::uniform_int_distribution<T> dist(lower_bound, upper_bound);
-		for (size_t i = 0; i < size; ++i) {
-			T data = dist(gen);
-			push_tail(data);
-		}
-		_size = size;
-	}
 
+		if constexpr (std::is_integral_v<T>) {
+			std::uniform_int_distribution<T> dist(lower_bound, upper_bound);
+
+			for (size_t i = 0; i < size; ++i) {
+				T data = dist(gen);
+				push_tail(data);
+			}
+			_size = size;
+		}
+		else if constexpr (std::is_floating_point_v<T>) {
+			std::uniform_real_distribution<T> dist(lower_bound, upper_bound);
+
+			for (size_t i = 0; i < size; ++i) {
+				T data = dist(gen);
+				push_tail(data);
+			}
+			_size = size;
+		}
+	}
 
 	~LinkedList() {
 		clear();
@@ -97,7 +109,7 @@ public:
 	}
 
 	void pop_head() {
-		if (!_head) 
+		if (!_head)
 			throw std::invalid_argument("the list is empty");
 
 		Node<T>* tmp = _head->next;
@@ -110,7 +122,7 @@ public:
 	}
 
 	void pop_tail() {
-		if (!_tail) 
+		if (!_tail)
 			throw std::invalid_argument("the list is empty");
 
 		Node<T>* tmp = _tail->prev;
@@ -130,7 +142,7 @@ public:
 			pop_head();
 			return tmp;
 		}
-		
+
 		if (!tmp->next) {
 			pop_tail();
 			return tmp;
@@ -150,7 +162,7 @@ public:
 		int index = 0;
 		while (tmp) {
 			if (tmp->data == data) {
-				tmp = erase(index);				
+				tmp = erase(index);
 				continue;
 			}
 			index++;
@@ -197,7 +209,7 @@ public:
 		return get_at(index)->data;
 	}
 
-	void clear() {		
+	void clear() {
 		while (_head) {
 			pop_head();
 		}
@@ -209,10 +221,34 @@ public:
 	}
 
 	void print_list() const {
-		for (Node<T>* tmp = _head; tmp != nullptr; tmp->next) {
-			cout << "[ " << tmp->data << ", ";
+		Node<T>* tmp = _head;
+		cout << "[ ";
+		while (tmp) {
+			cout << tmp->data;
+			if (tmp->next)
+				cout << ", ";
+			tmp = tmp->next;
 		}
-		cout << "]" << endl;
+		cout << " ]";
+	}
+
+	// –азвернуть список в противоположную сторону.
+	void reverse() {		
+		Node<T>* current = _head;
+		Node<T>* tmp = nullptr;
+
+		while (current) {
+			tmp = current->prev;
+			current->prev = current->next;
+			current->next = tmp;
+
+			current = current->prev;
+		}
+
+		if (tmp) {
+			_tail = _head;
+			_head = tmp->prev;
+		}
 	}
 };
 
